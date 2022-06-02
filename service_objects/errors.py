@@ -91,6 +91,34 @@ class Unauthorized(Error):
         return "unauthorized"
 
 
+class AuthenticationFailed(Error):
+    @property
+    def _default_response_status(self):
+        return 401
+
+    @property
+    def _default_message(self):
+        return "Authorization is required"
+
+    @property
+    def _default_translation_key(self):
+        return "authentication_failed"
+
+
+class AccessDenied(Error):
+    @property
+    def _default_response_status(self):
+        return 423
+
+    @property
+    def _default_message(self):
+        return "Access denied"
+
+    @property
+    def _default_translation_key(self):
+        return "locked"
+
+
 class NotFound(Error):
     @property
     def _default_response_status(self):
