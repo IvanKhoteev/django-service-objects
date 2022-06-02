@@ -104,11 +104,6 @@ class NotFound(Error):
     def _default_translation_key(self):
         return "not_found"
 
-    # What for ? (WTF)
-    @property
-    def code(self):
-        return "not_found"
-
 
 class ValidationError(Error):
     @property
@@ -137,19 +132,6 @@ class ForbiddenError(Error):
     def _default_translation_key(self):
         return "forbidden"
 
-
-class SystemError(Error):
-    @property
-    def _default_response_status(self):
-        return 400
-
-    @property
-    def _default_message(self):
-        return "Invalid requ"
-
-    @property
-    def _default_translation_key(self):
-        return "system_error"
 
 
 class ServiceObjectLogicError(ValidationError):
