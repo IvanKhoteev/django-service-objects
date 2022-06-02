@@ -133,6 +133,36 @@ class ForbiddenError(Error):
         return "forbidden"
 
 
-
 class ServiceObjectLogicError(ValidationError):
     pass
+
+
+def extend_exception_for_response(exception):
+    exc_type, exc_value, exc_traceback = sys.exc_info()
+    translation_key = exception.translation_key if hasattr(exception,
+                                                           "translation_key") else "internal_server_error"
+    debug_message = exception.debug_message if hasattr(exception, "debug_message") else exc_value.__str__()
+    details = exception.details if hasattr(exception, "details") else None
+    additional_info = exception.additional_info if hasattr(exception, "additional_info") else None
+    try:
+        response_status = exception.response_status
+    except AttributeError:
+        response_status = 500
+    try:
+        message = exception.message
+    except AttributeError:
+        message = "We are sorry but something went wrong"
+
+    error_dict = {
+        "type": exc_type.__name__,
+        "message": message,
+        "translation_key": translation_key,
+        "debug_message": debug_message,
+        "backtrace": [line for index, line in
+                      enumerate(traceback.format_exception(exc_type, exc_value, exc_traceback)) if index != 1],
+        "details": details,
+        "additional_info": additional_info
+    }
+    setattr(exception, 'response_dict', error_dict)
+    setattr(exception, 'response_status', response_status)
+    return exception
